@@ -49,7 +49,7 @@ function getDefaultModules() {
                 loader: 'url-loader?limit=8192'
             },
             {
-                test: /\.json$/,
+                test: /\.json/,
                 loader: 'json-loader'
             },
             {
