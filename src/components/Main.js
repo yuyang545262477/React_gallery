@@ -78,6 +78,7 @@ class GalleryByReactApp extends React.Component {
         return Math.ceil(Math.random() * (high - low) + low);
     }
     
+    //
     // getRangeRandom = (low, high) => {
     //     Math.ceil(Math.random() * (high - low) + low)
     // };
@@ -107,6 +108,9 @@ class GalleryByReactApp extends React.Component {
         imgsArrangeCenterArr[0].pos = centerPos;
         //    取出要布局上侧的图片的状态
         topImgSpliceIndex = Math.ceil(Math.random() * (imgsArrangeArr.length - topImgNum));
+        // alert(topImgNum);
+        // alert(topImgSpliceIndex);
+        
         imgsArrangeTopArr = imgsArrangeArr.splice(topImgSpliceIndex, topImgNum);
         
         //    布局位于上侧的图片
@@ -116,6 +120,7 @@ class GalleryByReactApp extends React.Component {
                 left: this.getRangeRandom(vPosRangeX[0], vPosRangeX[1])
             }
         }.bind(this));
+        window.console.log(imgsArrangeTopArr);
         //     布局两侧的图片
         for (var i = 0, j = imgsArrangeArr.length, k = j / 2; i < j; i++) {
             
@@ -134,7 +139,7 @@ class GalleryByReactApp extends React.Component {
         }
         
         if (imgsArrangeTopArr && imgsArrangeTopArr[0]) {
-            imgsArrangeTopArr.splice(topImgSpliceIndex, 0, imgsArrangeTopArr[0]);
+            imgsArrangeArr.splice(topImgSpliceIndex, 0, imgsArrangeTopArr[0]);
         }
         
         imgsArrangeArr.splice(centerIndex, 0, imgsArrangeCenterArr[0]);
@@ -144,21 +149,6 @@ class GalleryByReactApp extends React.Component {
         });
         
     }
-    
-    
-    //老师的写法
-    // getInitialState() {
-    //     return {
-    //         imgsArrangeArr: [
-    //             /*{
-    //              pos: {
-    //              left: '0',
-    //              top: '0'
-    //              }
-    //              }*/
-    //         ]
-    //     }
-    // }
     
     
     componentDidMount() {
@@ -195,7 +185,7 @@ class GalleryByReactApp extends React.Component {
         //    计算图片上侧的排布位置。
         this.Constant.vPosRange.x[0] = halfStageW - imgW;
         this.Constant.vPosRange.x[1] = halfStageW;
-        this.Constant.vPosRange.topY[0] = -imgH;
+        this.Constant.vPosRange.topY[0] = -halfImgH;
         this.Constant.vPosRange.topY[1] = halfStageH - halfImgH * 3;
         
         
