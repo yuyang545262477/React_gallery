@@ -21,11 +21,16 @@ ImageDatas = (function (imageDatasArr) {
 
 /*  图片信息 */
 class ImgFigure extends React.Component {
-    // alert('ImgFigure'+ Constant.centerPos);
     
     render() {
+        var styleObj = {};
+        if (this.props.arrange.pos) {
+            styleObj = this.props.arrange.pos;
+        }
+        
+        
         return (
-            <figure className="img-figure">
+            <figure className="img-figure" style={styleObj}>
                 <img src={this.props.data.imageURL}
                      alt={this.props.data.title}/>
                 <figcaption>
@@ -59,12 +64,101 @@ class GalleryByReactApp extends React.Component {
                 topY: [0, 0]
             }
         };
+        this.state = {
+            imgsArrangeArr: []
+        };
+        // this.getRangeRandom = this.getRangeRandom.bind(this);
+        // this.rearrange = this.rearrange.bind(this);
+        
         
     }
     
-    rearrage(centerIndex) {
+    
+    getRangeRandom(low, high) {
+        return Math.ceil(Math.random() * (high - low) + low);
+    }
+    
+    // getRangeRandom = (low, high) => {
+    //     Math.ceil(Math.random() * (high - low) + low)
+    // };
+    
+    
+    rearrange(centerIndex) {
+        var imgsArrangeArr = this.state.imgsArrangeArr,
+            Constant = this.Constant,
+            centerPos = Constant.centerPos,
+            hPosRange = Constant.hPosRange,
+            vPosRange = Constant.vPosRange,
+            hPosRangeLeftSecX = hPosRange.leftSecX,
+            hPosRangeRightSecX = hPosRange.rightSecX,
+            hPosRangeY = hPosRange.y,
+            vPosRangeTopY = vPosRange.topY,
+            vPosRangeX = vPosRange.x;
+        
+        
+        //    用来存储上侧图片信息。
+        var imgsArrangeTopArr = [],
+            topImgNum = Math.ceil(Math.random() * 2),
+            topImgSpliceIndex = 0,
+            imgsArrangeCenterArr = imgsArrangeArr.splice(centerIndex, 1);
+        
+        
+        //  首先居中centerIndex的图片
+        imgsArrangeCenterArr[0].pos = centerPos;
+        //    取出要布局上侧的图片的状态
+        topImgSpliceIndex = Math.ceil(Math.random() * (imgsArrangeArr.length - topImgNum));
+        imgsArrangeTopArr = imgsArrangeArr.splice(topImgSpliceIndex, topImgNum);
+        
+        //    布局位于上侧的图片
+        imgsArrangeTopArr.forEach(function (value, index) {
+            imgsArrangeTopArr[index].pos = {
+                top: this.getRangeRandom(vPosRangeTopY[0], vPosRangeTopY[1]),
+                left: this.getRangeRandom(vPosRangeX[0], vPosRangeX[1])
+            }
+        }.bind(this));
+        //     布局两侧的图片
+        for (var i = 0, j = imgsArrangeArr.length, k = j / 2; i < j; i++) {
+            
+            var hPosRangeLORX = null;
+            
+            //    前半部分布局左边,右半部分布局右边
+            if (i < k) {
+                hPosRangeLORX = hPosRangeLeftSecX;
+            } else {
+                hPosRangeLORX = hPosRangeRightSecX;
+            }
+            imgsArrangeArr[i].pos = {
+                top: this.getRangeRandom(hPosRangeY[0], hPosRangeY[1]),
+                left: this.getRangeRandom(hPosRangeLORX[0], hPosRangeLORX[1])
+            }
+        }
+        
+        if (imgsArrangeTopArr && imgsArrangeTopArr[0]) {
+            imgsArrangeTopArr.splice(topImgSpliceIndex, 0, imgsArrangeTopArr[0]);
+        }
+        
+        imgsArrangeArr.splice(centerIndex, 0, imgsArrangeCenterArr[0]);
+        
+        this.setState({
+            imgsArrangeArr: imgsArrangeArr
+        });
         
     }
+    
+    
+    //老师的写法
+    // getInitialState() {
+    //     return {
+    //         imgsArrangeArr: [
+    //             /*{
+    //              pos: {
+    //              left: '0',
+    //              top: '0'
+    //              }
+    //              }*/
+    //         ]
+    //     }
+    // }
     
     
     componentDidMount() {
@@ -103,6 +197,10 @@ class GalleryByReactApp extends React.Component {
         this.Constant.vPosRange.x[1] = halfStageW;
         this.Constant.vPosRange.topY[0] = -imgH;
         this.Constant.vPosRange.topY[1] = halfStageH - halfImgH * 3;
+        
+        
+        //    调用函数排布图片。
+        this.rearrange(0);
     }
     
     
@@ -111,8 +209,20 @@ class GalleryByReactApp extends React.Component {
             imgFigures = [];
         
         ImageDatas.forEach(function (value, index) {
-            imgFigures.push(<ImgFigure data={value} ref={'imgFigure'+index} key={index}/>);
+            
+            if (!this.state.imgsArrangeArr[index]) {
+                this.state.imgsArrangeArr[index] = {
+                    pos: {
+                        left: 0,
+                        top: 0
+                    }
+                }
+                
+            }
+            
+            imgFigures.push(<ImgFigure data={value} ref={'imgFigure'+index} key={index} arrange={this.state.imgsArrangeArr[index]}/>);
         }.bind(this));
+        
         return (
             <section className="stage" ref="stage">
                 <section className="img-sec">
@@ -129,5 +239,10 @@ class GalleryByReactApp extends React.Component {
 }
 
 GalleryByReactApp.defaultProps = {};
+
+// GalleryByReactApp.getRangeRandom = (low, high) => {
+//     Math.ceil(Math.random() * (high - low) + low)
+// };
+
 
 export default GalleryByReactApp;
