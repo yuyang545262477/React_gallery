@@ -28,3 +28,15 @@ node_modules
 
 # Bower
 bower_components/
+
+dist
+.idea/React_gallery.iml
+.idea/encodings.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/workspace.xml
+src/fonts/icons/icon/iconfont.eot
+src/fonts/icons/icon/iconfont.svg
+src/fonts/icons/icon/iconfont.ttf
+src/styles/custom.css
+src/styles/custom.css.map
