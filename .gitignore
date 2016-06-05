@@ -29,7 +29,6 @@ node_modules
 # Bower
 bower_components/
 
-dist
 .idea/React_gallery.iml
 .idea/encodings.xml
 .idea/misc.xml
